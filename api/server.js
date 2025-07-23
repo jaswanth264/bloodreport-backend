@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { supabase } from '../superClient.js';
 
+<<<<<<< HEAD
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -15,10 +16,20 @@ const getUserFromRequest = async (req) => {
 };
 
 // 🔁 Root route
+=======
+// Vercel function API handler for Express:
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Root route
+>>>>>>> 07fa4f27cec295dad4dbdb457bb3806433f3a5ac
 app.get('/', (req, res) => {
   res.send('Blood Report API is running');
 });
 
+<<<<<<< HEAD
 // 📥 POST /upload-report (1 report per user)
 app.post('/upload-report', async (req, res) => {
   const user = await getUserFromRequest(req);
@@ -98,9 +109,44 @@ app.get('/all-reports', async (req, res) => {
   const { data, error } = await supabase
     .from('reports')
     .select('*, users(username, name, age, email)');
+=======
+// POST: submit report
+app.post('/submit', async (req, res) => {
+  const { name, age, reportUrl, email } = req.body;
+  const { data, error } = await supabase
+    .from('reports')
+    .insert([{ name, age, report_url: reportUrl, email }]);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json({ message: 'Report submitted', data });
+});
+
+// GET: user report by email
+app.get('/report/:email', async (req, res) => {
+  const { email } = req.params;
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (error) return res.status(404).json({ error: error.message });
+  res.json(data);
+});
+
+// GET: admin - all reports
+app.get('/all-reports', async (req, res) => {
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*');
+>>>>>>> 07fa4f27cec295dad4dbdb457bb3806433f3a5ac
 
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
+<<<<<<< HEAD
+=======
+// Instead of app.listen(), export as Vercel handler:
+>>>>>>> 07fa4f27cec295dad4dbdb457bb3806433f3a5ac
 export default app;

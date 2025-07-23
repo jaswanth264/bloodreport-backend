@@ -17,4 +17,8 @@
     "express": "^5.1.0",
     "supabase": "^2.31.8"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 07fa4f27cec295dad4dbdb457bb3806433f3a5ac
