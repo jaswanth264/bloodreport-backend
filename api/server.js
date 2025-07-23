@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { supabase } from './superClient.js';
+import { supabase } from '../superClient.js';
 
-dotenv.config();
+// Vercel function API handler for Express:
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Root route (for Vercel to not return 404)
+// Root route
 app.get('/', (req, res) => {
   res.send('Blood Report API is running');
 });
@@ -16,7 +16,6 @@ app.get('/', (req, res) => {
 // POST: submit report
 app.post('/submit', async (req, res) => {
   const { name, age, reportUrl, email } = req.body;
-
   const { data, error } = await supabase
     .from('reports')
     .insert([{ name, age, report_url: reportUrl, email }]);
@@ -28,7 +27,6 @@ app.post('/submit', async (req, res) => {
 // GET: user report by email
 app.get('/report/:email', async (req, res) => {
   const { email } = req.params;
-
   const { data, error } = await supabase
     .from('reports')
     .select('*')
@@ -49,5 +47,5 @@ app.get('/all-reports', async (req, res) => {
   res.json(data);
 });
 
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+// Instead of app.listen(), export as Vercel handler:
+export default app;
